@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real-time Classroom Activity & Anxiety Monitor</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS Link -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="header">
+        <div class="header-title">
+            <h1>Real-time Classroom Activity Monitor</h1>
+            <p>Static Client Dashboard & Log Aktivitas Gerak Mahasiswa (FastAPI & MongoDB)</p>
+        </div>
+        <div style="display: flex; align-items: center; gap: 1rem;">
+            <button class="btn btn-outline" onclick="exportCSV()"><i class="fa-solid fa-download"></i> Ekspor Dataset</button>
+            <div id="connection-indicator" class="conn-status disconnected">
+                <span class="conn-dot"></span>
+                <span id="conn-text">Offline</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="dashboard-grid">
+        <!-- LEFT PANEL: GRID LAYOUT & SENSOR METRICS -->
+        <div class="panel">
+            <div class="panel-header">
+                <div class="panel-title">
+                    <i class="fa-solid fa-graduation-cap"></i> Denah Tempat Duduk Kelas
+                </div>
+                <div style="font-size: 0.75rem; color: var(--text-muted);">Total: 6 Kursi Pantau</div>
+            </div>
+
+            <!-- Sensor Environment Values -->
+            <div class="env-bar">
+                <div class="env-card temp">
+                    <div class="env-icon"><i class="fa-solid fa-temperature-half"></i></div>
+                    <div class="env-info">
+                        <span class="env-val" id="env-temp">--.- °C</span>
+                        <span class="env-lbl">Suhu</span>
+                    </div>
+                </div>
+                <div class="env-card hum">
+                    <div class="env-icon"><i class="fa-solid fa-droplet"></i></div>
+                    <div class="env-info">
+                        <span class="env-val" id="env-humidity">--.- %</span>
+                        <span class="env-lbl">Kelembapan</span>
+                    </div>
+                </div>
+                <div class="env-card lux">
+                    <div class="env-icon"><i class="fa-solid fa-sun"></i></div>
+                    <div class="env-info">
+                        <span class="env-val" id="env-lux">--- Lux</span>
+                        <span class="env-lbl">Cahaya</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Grid Denah 6 Kursi -->
+            <div class="classroom-grid">
+                <div class="classroom-door">Pintu / Depan</div>
+                
+                <!-- Desk 1 s.d 6 -->
+                <div class="desk state-0" id="desk-1">
+                    <div class="desk-num">KURSI 1</div>
+                    <div class="avatar-circle"><i class="fa-solid fa-user"></i></div>
+                    <div class="desk-status" id="status-1">KOSONG</div>
+                </div>
+                <div class="desk state-0" id="desk-2">
+                    <div class="desk-num">KURSI 2</div>
+                    <div class="avatar-circle"><i class="fa-solid fa-user"></i></div>
+                    <div class="desk-status" id="status-2">KOSONG</div>
+                </div>
+                <div class="desk state-0" id="desk-3">
+                    <div class="desk-num">KURSI 3</div>
+                    <div class="avatar-circle"><i class="fa-solid fa-user"></i></div>
+                    <div class="desk-status" id="status-3">KOSONG</div>
+                </div>
+                <div class="desk state-0" id="desk-4">
+                    <div class="desk-num">KURSI 4</div>
+                    <div class="avatar-circle"><i class="fa-solid fa-user"></i></div>
+                    <div class="desk-status" id="status-4">KOSONG</div>
+                </div>
+                <div class="desk state-0" id="desk-5">
+                    <div class="desk-num">KURSI 5</div>
+                    <div class="avatar-circle"><i class="fa-solid fa-user"></i></div>
+                    <div class="desk-status" id="status-5">KOSONG</div>
+                </div>
+                <div class="desk state-0" id="desk-6">
+                    <div class="desk-num">KURSI 6</div>
+                    <div class="avatar-circle"><i class="fa-solid fa-user"></i></div>
+                    <div class="desk-status" id="status-6">KOSONG</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT PANEL: REAL-TIME ACTIVITY LOGS FEED -->
+        <div class="panel">
+            <div class="panel-header">
+                <div class="panel-title">
+                    <i class="fa-solid fa-list-ul"></i> Log Gerakan Mahasiswa
+                </div>
+                <button class="btn btn-outline" style="padding: 0.25rem 0.6rem; font-size: 0.75rem;" onclick="clearLogs()">Clear</button>
+            </div>
+            
+            <div class="log-feed-container" id="log-feed">
+                <div class="log-item" style="border-left: 3px solid var(--primary);">
+                    <span class="log-time">[SISTEM]</span>
+                    <span>Menunggu koneksi WebSocket ke server Python...</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- BOTTOM PANEL: RAW DATABASE RECORDS TABLE -->
+        <div class="panel bottom-panel">
+            <div class="panel-header">
+                <div class="panel-title">
+                    <i class="fa-solid fa-database"></i> 10 Data Terakhir Masuk ke MongoDB
+                </div>
+                <div style="font-size: 0.75rem; color: var(--text-muted);">Auto-Refresh dari Database</div>
+            </div>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Waktu (Timestamp)</th>
+                            <th>Suhu (°C)</th>
+                            <th>Kelembapan (%)</th>
+                            <th>Cahaya (Lux)</th>
+                            <th>K1 (PIR)</th>
+                            <th>K2 (PIR)</th>
+                            <th>K3 (PIR)</th>
+                            <th>K4 (PIR)</th>
+                            <th>K5 (PIR)</th>
+                            <th>K6 (PIR)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="db-table-body">
+                        <tr>
+                            <td colspan="10" style="text-align: center; color: var(--text-muted); padding: 2rem;">Menghubungkan ke API...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom JS Link -->
+    <script src="app.js"></script>
+</body>
+</html>
