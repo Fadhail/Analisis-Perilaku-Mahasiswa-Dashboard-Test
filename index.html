@@ -1,16 +1,20 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Real-time Classroom Activity & Anxiety Monitor</title>
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap"
+        rel="stylesheet">
     <!-- FontAwesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Custom CSS Link -->
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
     <div class="header">
@@ -18,8 +22,13 @@
             <h1>Real-time Classroom Activity Monitor</h1>
             <p>Static Client Dashboard & Log Aktivitas Gerak Mahasiswa (FastAPI & MongoDB)</p>
         </div>
-        <div style="display: flex; align-items: center; gap: 1rem;">
-            <button class="btn btn-outline" onclick="exportCSV()"><i class="fa-solid fa-download"></i> Ekspor Dataset</button>
+        <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
+            <span style="font-size: 0.85rem; color: var(--text-muted);">Jumlah Data: <span id="db-count"
+                    style="color: var(--info); font-weight: 700;">0</span></span>
+            <button class="btn btn-outline" onclick="exportCSV()"><i class="fa-solid fa-download"></i> Ekspor
+                Dataset</button>
+            <button class="btn btn-outline" style="border-color: rgba(239, 68, 68, 0.3); color: var(--error);"
+                onclick="clearDatabase()"><i class="fa-solid fa-trash-can"></i> Hapus Database</button>
             <div id="connection-indicator" class="conn-status disconnected">
                 <span class="conn-dot"></span>
                 <span id="conn-text">Offline</span>
@@ -65,7 +74,7 @@
             <!-- Grid Denah 6 Kursi -->
             <div class="classroom-grid">
                 <div class="classroom-door">Pintu / Depan</div>
-                
+
                 <!-- Desk 1 s.d 6 -->
                 <div class="desk state-0" id="desk-1">
                     <div class="desk-num">KURSI 1</div>
@@ -106,9 +115,10 @@
                 <div class="panel-title">
                     <i class="fa-solid fa-list-ul"></i> Log Gerakan Mahasiswa
                 </div>
-                <button class="btn btn-outline" style="padding: 0.25rem 0.6rem; font-size: 0.75rem;" onclick="clearLogs()">Clear</button>
+                <button class="btn btn-outline" style="padding: 0.25rem 0.6rem; font-size: 0.75rem;"
+                    onclick="clearLogs()">Clear</button>
             </div>
-            
+
             <div class="log-feed-container" id="log-feed">
                 <div class="log-item" style="border-left: 3px solid var(--primary);">
                     <span class="log-time">[SISTEM]</span>
@@ -144,7 +154,8 @@
                     </thead>
                     <tbody id="db-table-body">
                         <tr>
-                            <td colspan="10" style="text-align: center; color: var(--text-muted); padding: 2rem;">Menghubungkan ke API...</td>
+                            <td colspan="10" style="text-align: center; color: var(--text-muted); padding: 2rem;">
+                                Menghubungkan ke API...</td>
                         </tr>
                     </tbody>
                 </table>
@@ -155,4 +166,5 @@
     <!-- Custom JS Link -->
     <script src="app.js"></script>
 </body>
+
 </html>

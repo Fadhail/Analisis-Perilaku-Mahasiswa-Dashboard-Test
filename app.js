@@ -8,7 +8,11 @@ let reconnectInterval = 3000;
 document.addEventListener("DOMContentLoaded", () => {
     connectWebSocket();
     fetchDatabaseTable();
-    setInterval(fetchDatabaseTable, 5000); // Polling tabel database setiap 5 detik
+    updateDataCount();
+    setInterval(() => {
+        fetchDatabaseTable();
+        updateDataCount();
+    }, 5000); // Polling data setiap 5 detik
 });
 
 // 1. WebSocket Connection Manager
@@ -213,4 +217,41 @@ function fetchDatabaseTable() {
 // 7. Unduh Ekspor CSV
 function exportCSV() {
     window.open(`${apiUrl}/export`, '_blank');
+}
+
+// 8. Update Jumlah Data di Database
+function updateDataCount() {
+    fetch(`${apiUrl}/count`)
+        .then(res => res.json())
+        .then(data => {
+            const countEl = document.getElementById("db-count");
+            if (countEl && data.count !== undefined) {
+                countEl.innerText = data.count;
+            }
+        })
+        .catch(err => console.log("Gagal mengambil jumlah data"));
+}
+
+// 9. Bersihkan Seluruh Data di Database
+function clearDatabase() {
+    if (confirm("Apakah Anda YAKIN ingin menghapus seluruh isi database secara permanen? Tindakan ini tidak dapat dibatalkan!")) {
+        fetch(`${apiUrl}/clear`, {
+            method: 'DELETE'
+        })
+            .then(res => res.json())
+            .then(data => {
+                alert(data.message || "Database berhasil dibersihkan.");
+                fetchDatabaseTable();
+                updateDataCount();
+                for (let i = 1; i <= 6; i++) {
+                    const desk = document.getElementById(`desk-${i}`);
+                    const status = document.getElementById(`status-${i}`);
+                    if (desk) desk.className = "desk state-0";
+                    if (status) status.innerText = "Kosong";
+                }
+            })
+            .catch(err => {
+                alert("Gagal menghapus database. Silakan coba lagi.");
+            });
+    }
 }
