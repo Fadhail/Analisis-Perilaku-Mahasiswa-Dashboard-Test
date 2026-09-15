@@ -1,6 +1,6 @@
 /* app.js */
-const wsUrl = "wss://apm.sket.site/ws";
-const apiUrl = "https://apm.sket.site/api/dataset";
+const wsUrl = "wss://apm.xeroon.my.id/ws";
+const apiUrl = "https://apm.xeroon.my.id/api/dataset";
 let socket;
 let reconnectInterval = 3000;
 
